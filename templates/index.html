@@ -4,30 +4,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Pipes and Filters - Unicomfacauca</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #ff1500;
+        }
+        textarea {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #004494;
+        }
+        .resultados {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+        .resultados h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        .resultados pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        .canvas-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- [Mantén todo tu contenido HTML actual] -->
-        
+        <h1>Demostración Arquitectura Pipes and Filters</h1>
+        <h2>Ingeniería de Sistemas - Unicomfacauca</h2>
+
+        <form method="POST">
+            <label for="texto">Ingresa el texto a procesar:</label><br>
+            <textarea id="texto" name="texto" rows="4">{{ texto_inicial or '' }}</textarea><br>
+            <input type="submit" value="Procesar Texto">
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
         {% if resultados %}
             <div class="canvas-container">
                 <h2>Visualización del Pipeline:</h2>
                 <canvas id="pipelineCanvas" width="800" height="250"></canvas>
             </div>
 
-            <!-- Resultados -->
             <div class="resultados">
-                <!-- [Contenido actual] -->
+                <h2>Resultados del Pipeline (Texto):</h2>
+                {% for paso, resultado in resultados.items() %}
+                    <h3>{{ paso }}:</h3>
+                    <pre>{{ resultado }}</pre>
+                {% endfor %}
+                <hr>
+                <h2>Resultado Final:</h2>
+                <pre>{{ texto_final }}</pre>
             </div>
-
-            <!-- Script externo con datos inyectados -->
-            <script src="{{ url_for('static', filename='js/pipeline-animation.js') }}"></script>
-            <script>
-                // Inyectar datos desde Flask
-                const pipelineData = JSON.parse('{{ resultados|tojson|safe }}');
-            </script>
         {% endif %}
     </div>
+
+    <footer class="footer">
+        <p>Realizado por: LUIS ALBERTO CAMAYO ERAZO</p>
+        <p>Ingeniería de Sistemas - Unicomfacauca</p>
+    </footer>
+
+    {% if resultados %}
+        <script>
+            const pipelineData = JSON.parse(`{{ resultados|tojson|safe }}`);
+        </script>
+        <script src="{{ url_for('static', filename='js/pipeline.js') }}"></script>
+    {% endif %}
 </body>
 </html>
